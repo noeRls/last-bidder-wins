@@ -1,0 +1,300 @@
+{
+  "address": "7x5a4DsG7gtWDLyrDUWXqqbzWBc3CpD3vR1vNUD1R8ag",
+  "metadata": {
+    "name": "bet",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "bet",
+      "discriminator": [
+        94,
+        203,
+        166,
+        126,
+        20,
+        243,
+        169,
+        82
+      ],
+      "accounts": [
+        {
+          "name": "bidder",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "bet_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "deposit_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "fee_address",
+          "writable": true,
+          "address": "H2tRSUTkwqXm5Uba6GRqrvPwH5m4ziyBMQYMkNEiqf3H"
+        }
+      ],
+      "args": [
+        {
+          "name": "bet_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "create_deposit",
+      "discriminator": [
+        157,
+        30,
+        11,
+        129,
+        16,
+        166,
+        115,
+        75
+      ],
+      "accounts": [
+        {
+          "name": "bidder",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "deposit_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "setup",
+      "discriminator": [
+        137,
+        0,
+        196,
+        175,
+        166,
+        131,
+        77,
+        178
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "bet_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw",
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "winner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "bet_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "BetState",
+      "discriminator": [
+        143,
+        61,
+        238,
+        62,
+        232,
+        157,
+        101,
+        185
+      ]
+    },
+    {
+      "name": "Empty",
+      "discriminator": [
+        15,
+        64,
+        23,
+        223,
+        220,
+        243,
+        41,
+        219
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InsufficientFundsForTransaction",
+      "msg": "Not enough sol to complete the transaction"
+    },
+    {
+      "code": 6001,
+      "name": "TooSmallBet",
+      "msg": "Bet not high enough"
+    },
+    {
+      "code": 6002,
+      "name": "TimeRemaining",
+      "msg": "Not ready for withdraw, there is some time remaining"
+    }
+  ],
+  "types": [
+    {
+      "name": "BetState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "last_bet_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "last_bet_value",
+            "type": "u64"
+          },
+          {
+            "name": "win_at_slot",
+            "type": "u64"
+          },
+          {
+            "name": "prizepool",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Empty",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      }
+    }
+  ]
+}

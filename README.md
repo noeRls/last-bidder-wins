@@ -68,3 +68,4 @@ You can validate the deployed program using the public program ID. Compare the o
 - Use Solana Explorer to view the program details: [Solana Explorer](https://explorer.solana.com/).
 - Confirm Non-Upgradeability: You can verify that the program is non-upgradeable by inspecting the deployment details on Solana Explorer. Programs marked as non-upgradeable cannot be altered after deployment.
 - You can follow [How to Verify a Program](https://solana.com/developers/guides/advanced/verified-builds) solana documentation to verify that the deployed program match the code in this repository.
+  - TL;DR run this command: `solana-verify verify-from-repo -u https://api.devnet.solana.com --program-id 7x5a4DsG7gtWDLyrDUWXqqbzWBc3CpD3vR1vNUD1R8ag --mount-path anchor https://github.com/noeRls/last-bidder-wins/`

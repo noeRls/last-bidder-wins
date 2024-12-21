@@ -8,6 +8,7 @@ import { useCluster } from '../cluster/cluster-data-access'
 import { useAnchorProvider } from '../solana/solana-provider'
 import { useTransactionToast } from '../ui/ui-layout'
 import { useNavigate } from 'react-router'
+import { useConnection } from '@solana/wallet-adapter-react'
 
 export function useLastBidderProgram() {
   const { cluster } = useCluster()
@@ -24,11 +25,11 @@ export function useLastBidderProgram() {
 
 export function useBetState() {
   const { program } = useLastBidderProgram();
-
+  const { connection } = useConnection();
   const betStateAccount = useMemo(() => getBetStatePublicKey(program), [program]);
 
   return useQuery({
-    queryKey: ['betstate', { betStateAccount }],
+    queryKey: ['betstate', { betStateAccount, endpoint: connection.rpcEndpoint }],
     queryFn: () => program.account.betState.fetch(betStateAccount),
   });
 }

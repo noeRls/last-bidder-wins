@@ -58,6 +58,11 @@ LastBidderWins leverages the decentralized and transparent nature of the Solana 
 - The platform does not custody your funds. All bets and winnings are directly handled by the smart contract and associated with your Solana wallet.
 - You retain full control of your private keys and wallet access.
 
+### **5. Strict Upgradability Policy**
+- **The program is upgradable** to fix bugs or introduce new features.
+- All upgrades are announced in advance, including details of the changes and their purpose.
+- No upgrades will ever be made while a bet is active. This ensures fairness and stability for all participants in the game.
+
 ---
 
 ### **How Users Can Validate Security**
@@ -66,6 +71,6 @@ You can validate the deployed program using the public program ID. Compare the o
 
 - **Program ID:** `7x5a4DsG7gtWDLyrDUWXqqbzWBc3CpD3vR1vNUD1R8ag`
 - Use Solana Explorer to view the program details: [Solana Explorer](https://explorer.solana.com/).
-- Confirm Non-Upgradeability: You can verify that the program is non-upgradeable by inspecting the deployment details on Solana Explorer. Programs marked as non-upgradeable cannot be altered after deployment.
+- You can verify that the upgrade authority match `5qUg6k1PeSog1Kwh51LgZgzG1avms5BoW26oDroidMCP` by inspecting the program details on Solana Explorer.
 - You can follow [How to Verify a Program](https://solana.com/developers/guides/advanced/verified-builds) solana documentation to verify that the deployed program match the code in this repository.
   - TL;DR run this command: `solana-verify verify-from-repo -u https://api.mainnet-beta.solana.com --program-id 7x5a4DsG7gtWDLyrDUWXqqbzWBc3CpD3vR1vNUD1R8ag --mount-path anchor https://github.com/noeRls/last-bidder-wins/`

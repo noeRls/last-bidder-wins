@@ -1,12 +1,16 @@
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 
-function toFixed(value: number, precision: number): number {
+function toFixed(value: number, precision: number, maxPrecision: number): number {
   const power = Math.pow(10, precision || 0);
-  return Math.round(value * power) / power;
+  const result = Math.round(value * power) / power;
+  if (result == 0 && value != 0 && precision < maxPrecision) {
+    return toFixed(value, precision + 1, maxPrecision)
+  }
+  return result;
 }
 
 export function RoundSol(sol: number): number {
-  return toFixed(sol, 4);
+  return toFixed(sol, 4, 6);
 }
 
 export function FormatSol(sol: number): string {

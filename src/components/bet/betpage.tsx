@@ -62,7 +62,7 @@ function PlaceBetButton({ solBet, lastBetSol }: { solBet: number, lastBetSol: nu
 function BetPage({ prizepoolLamports, lastBetLamports }: { prizepoolLamports: number, lastBetLamports: number }) {
   const lastBetSol = LamportsToSol(lastBetLamports);
   const [betAmount, setBetAmount] = useState(lastBetSol ? RoundSol(lastBetSol * 2) : 0); // User input for bet amount
-  const networkFeeEstimate = 0.000065; // Example network fee in SOL
+  const networkFeeEstimate = 0.0001; // Example network fee in SOL
 
   // Calculations
   const prizepoolSol = LamportsToSol(prizepoolLamports);
@@ -87,12 +87,12 @@ function BetPage({ prizepoolLamports, lastBetLamports }: { prizepoolLamports: nu
           <input
             type="number"
             placeholder={`Enter more than ${FormatSol(lastBetSol)}`}
-            className={`input input-bordered w-full ${!isValidBet && betAmount > 0 ? "input-error" : ""
+            className={`input input-bordered w-full ${!isValidBet && betAmount != 0 ? "input-error" : ""
               }`}
             value={betAmount}
             onChange={(e) => setBetAmount(parseFloat(e.target.value) || 0)}
           />
-          {!isValidBet && betAmount > 0 && (
+          {!isValidBet && betAmount != 0 && (
             <span className="text-sm text-error mt-2">
               Your bet must be greater than {FormatSol(lastBetSol)}.
             </span>
@@ -128,7 +128,7 @@ function BetPage({ prizepoolLamports, lastBetLamports }: { prizepoolLamports: nu
             </li>
             <li className="flex justify-between font-bold">
               <span>Total Cost</span>
-              <span>{FormatSol(totalCost)}</span>
+              <span>~{FormatSol(totalCost)}</span>
             </li>
           </ul>
         </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FormatSol, LamportsToSol, SolToLamports } from "../solana/sol-display";
+import { FormatSol, LamportsToSol, RoundSol, SolToLamports } from "../solana/sol-display";
 import { useBetState, usePlaceBet } from "./bet-data";
 import { LoadingSpinnerOrError } from "../ui/spinner";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -61,7 +61,7 @@ function PlaceBetButton({ solBet, lastBetSol }: { solBet: number, lastBetSol: nu
 
 function BetPage({ prizepoolLamports, lastBetLamports }: { prizepoolLamports: number, lastBetLamports: number }) {
   const lastBetSol = LamportsToSol(lastBetLamports);
-  const [betAmount, setBetAmount] = useState(lastBetSol ? lastBetSol * 2 : 0); // User input for bet amount
+  const [betAmount, setBetAmount] = useState(lastBetSol ? RoundSol(lastBetSol * 2) : 0); // User input for bet amount
   const networkFeeEstimate = 0.000065; // Example network fee in SOL
 
   // Calculations

@@ -1,5 +1,5 @@
 import { getBetProgram, getBetProgramId, getBetStatePublicKey, createBetTransaction } from '@project/anchor'
-import { Cluster, PublicKey } from '@solana/web3.js'
+import { Cluster, ComputeBudgetProgram, PublicKey } from '@solana/web3.js'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { useMemo } from 'react'
@@ -34,30 +34,6 @@ export function useBetState() {
   });
 }
 
-export function usePlaceBet(account: PublicKey) {
-  const betState = useBetState();
-  const { program } = useLastBidderProgram();
-  const provider = useAnchorProvider();
-  const transactionToast = useTransactionToast()
-  const navigate = useNavigate();
-
-  return useMutation({
-    mutationFn: async (lamports: number) => {
-      const transaction = await createBetTransaction(program, account, lamports);
-      return provider.sendAndConfirm(transaction);
-    },
-    onSuccess: (tx) => {
-      transactionToast(tx);
-      navigate("/home");
-      return betState.refetch();
-    },
-    onError: (err) => {
-      console.error(err);
-      toast.error(`Transaction failed! ${err}`);
-    }
-  });
-}
-
 export function useSetupBetState() {
   const { program } = useLastBidderProgram();
   const betState = useBetState();
@@ -76,16 +52,61 @@ export function useSetupBetState() {
   });
 }
 
+const SLEEP_BEFORE_BET_STATE_REFETCH_MS = 500;
+const FEE_MICRO_LAMPORTS = 100_000;
+
+async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function usePlaceBet(account: PublicKey) {
+  const betState = useBetState();
+  const { program } = useLastBidderProgram();
+  const provider = useAnchorProvider();
+  const transactionToast = useTransactionToast()
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: async (lamports: number) => {
+      const transaction = await createBetTransaction(program, account, lamports);
+      transaction.add(ComputeBudgetProgram.setComputeUnitPrice({
+        microLamports: FEE_MICRO_LAMPORTS
+      }));
+      return provider.sendAndConfirm(transaction);
+    },
+    onSuccess: (tx) => {
+      transactionToast(tx);
+      navigate("/home");
+      sleep(SLEEP_BEFORE_BET_STATE_REFETCH_MS).then(() => {
+        betState.refetch();
+      });
+    },
+    onError: (err) => {
+      console.error(err);
+      toast.error(`Transaction failed! ${err}`);
+    }
+  });
+}
+
 export function useWithdraw() {
   const { program } = useLastBidderProgram();
   const betState = useBetState();
   const transactionToast = useTransactionToast();
+  const provider = useAnchorProvider();
 
   return useMutation({
-    mutationFn: () => program.methods.withdraw().rpc(),
+    mutationFn: async () => {
+      const transaction = await program.methods.withdraw().transaction();
+      transaction.add(ComputeBudgetProgram.setComputeUnitPrice({
+        microLamports: FEE_MICRO_LAMPORTS
+      }));
+      return provider.sendAndConfirm(transaction);
+    },
     onSuccess: (tx) => {
       transactionToast(tx);
-      return betState.refetch();
+      sleep(SLEEP_BEFORE_BET_STATE_REFETCH_MS).then(() => {
+        betState.refetch();
+      });
     },
     onError: (err) => {
       console.error(err);

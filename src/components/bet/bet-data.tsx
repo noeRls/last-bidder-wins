@@ -9,6 +9,7 @@ import { useAnchorProvider } from '../solana/solana-provider'
 import { useTransactionToast } from '../ui/ui-layout'
 import { useNavigate } from 'react-router'
 import { useConnection } from '@solana/wallet-adapter-react'
+import { web3 } from '@coral-xyz/anchor'
 
 export function useLastBidderProgram() {
   const { cluster } = useCluster()
@@ -53,7 +54,7 @@ export function useSetupBetState() {
 }
 
 const SLEEP_BEFORE_BET_STATE_REFETCH_MS = 500;
-const FEE_MICRO_LAMPORTS = 100_000;
+const FEE_MICRO_LAMPORTS = 1_000_000;
 
 async function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -68,10 +69,11 @@ export function usePlaceBet(account: PublicKey) {
 
   return useMutation({
     mutationFn: async (lamports: number) => {
-      const transaction = await createBetTransaction(program, account, lamports);
+      const transaction = new web3.Transaction();
       transaction.add(ComputeBudgetProgram.setComputeUnitPrice({
         microLamports: FEE_MICRO_LAMPORTS
       }));
+      transaction.add(await createBetTransaction(program, account, lamports));
       return provider.sendAndConfirm(transaction);
     },
     onSuccess: (tx) => {
@@ -96,10 +98,11 @@ export function useWithdraw() {
 
   return useMutation({
     mutationFn: async () => {
-      const transaction = await program.methods.withdraw().transaction();
+      const transaction = new web3.Transaction();
       transaction.add(ComputeBudgetProgram.setComputeUnitPrice({
         microLamports: FEE_MICRO_LAMPORTS
       }));
+      transaction.add(await program.methods.withdraw().transaction());
       return provider.sendAndConfirm(transaction);
     },
     onSuccess: (tx) => {

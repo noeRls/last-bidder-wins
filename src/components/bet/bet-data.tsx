@@ -54,11 +54,17 @@ export function useSetupBetState() {
 }
 
 const SLEEP_BEFORE_BET_STATE_REFETCH_MS = 500;
-const FEE_MICRO_LAMPORTS = 1_000_000;
+const FEE_MICRO_LAMPORTS = 500_000;
 
 async function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+const confirmOptions: web3.ConfirmOptions = {
+  commitment: 'confirmed',
+  maxRetries: 2,
+  preflightCommitment: 'confirmed'
+};
 
 export function usePlaceBet(account: PublicKey) {
   const betState = useBetState();
@@ -74,7 +80,7 @@ export function usePlaceBet(account: PublicKey) {
         microLamports: FEE_MICRO_LAMPORTS
       }));
       transaction.add(await createBetTransaction(program, account, lamports));
-      return provider.sendAndConfirm(transaction);
+      return provider.sendAndConfirm(transaction, undefined, confirmOptions);
     },
     onSuccess: (tx) => {
       transactionToast(tx);
@@ -103,7 +109,7 @@ export function useWithdraw() {
         microLamports: FEE_MICRO_LAMPORTS
       }));
       transaction.add(await program.methods.withdraw().transaction());
-      return provider.sendAndConfirm(transaction);
+      return provider.sendAndConfirm(transaction, undefined, confirmOptions);
     },
     onSuccess: (tx) => {
       transactionToast(tx);

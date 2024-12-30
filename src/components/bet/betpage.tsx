@@ -62,7 +62,7 @@ function PlaceBetButton({ solBet, lastBetSol }: { solBet: number, lastBetSol: nu
 function BetPage({ prizepoolLamports, lastBetLamports }: { prizepoolLamports: number, lastBetLamports: number }) {
   const lastBetSol = LamportsToSol(lastBetLamports);
   const [betAmount, setBetAmount] = useState(lastBetSol ? RoundSol(lastBetSol * 2) : 0); // User input for bet amount
-  const networkFeeEstimate = 0.0001; // Example network fee in SOL
+  const networkFeeEstimate = 0.0004; // Example network fee in SOL
 
   // Calculations
   const prizepoolSol = LamportsToSol(prizepoolLamports);

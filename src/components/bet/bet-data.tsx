@@ -1,5 +1,5 @@
 import { getBetProgram, getBetProgramId, getBetStatePublicKey, createBetTransaction } from '@project/anchor'
-import { Cluster, ComputeBudgetProgram, PublicKey } from '@solana/web3.js'
+import { Cluster, ComputeBudgetProgram, PublicKey, TransactionExpiredTimeoutError } from '@solana/web3.js'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { useMemo } from 'react'
@@ -53,7 +53,7 @@ export function useSetupBetState() {
   });
 }
 
-const SLEEP_BEFORE_BET_STATE_REFETCH_MS = 500;
+const SLEEP_BEFORE_BET_STATE_REFETCH_MS = 1_000;
 const FEE_MICRO_LAMPORTS = 500_000;
 
 async function sleep(ms: number): Promise<void> {
@@ -61,9 +61,9 @@ async function sleep(ms: number): Promise<void> {
 }
 
 const confirmOptions: web3.ConfirmOptions = {
-  commitment: 'confirmed',
+  commitment: 'processed',
   maxRetries: 2,
-  preflightCommitment: 'confirmed'
+  preflightCommitment: 'processed'
 };
 
 export function usePlaceBet(account: PublicKey) {
@@ -91,7 +91,13 @@ export function usePlaceBet(account: PublicKey) {
     },
     onError: (err) => {
       console.error(err);
-      toast.error(`Transaction failed! ${err}`);
+      if (err instanceof TransactionExpiredTimeoutError) {
+        transactionToast(err.signature, 'timeout');
+        navigate("/home");
+        betState.refetch();
+      } else {
+        toast.error(`Transaction failed! ${err}`);
+      }
     }
   });
 }

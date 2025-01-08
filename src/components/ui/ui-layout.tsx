@@ -137,12 +137,14 @@ export function ellipsify(str = '', len = 4) {
 }
 
 export function useTransactionToast() {
-  return (signature: string) => {
+  return (signature: string, status: 'success'|'timeout' = 'success') => {
     toast.success(
       <div className={'text-center'}>
-        <div className="text-lg">Transaction sent</div>
+        <div className="text-lg">{status === 'success' ? "Transaction sent" : "Transaction sent but not confirmed yet"}</div>
         <ExplorerLink path={`tx/${signature}`} label={'View Transaction'} className="btn btn-xs btn-primary" />
-      </div>,
+      </div>, {
+        duration: 10000
+      }
     )
   }
 }

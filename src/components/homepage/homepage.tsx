@@ -19,7 +19,7 @@ function HowItWorks() {
     <div className="card w-full max-w-md bg-base-200 shadow-lg">
       <div className="card-body">
         <h2 className="card-title justify-center text-2xl">🎯 How It Works</h2>
-        <ul className="list-none space-y-4 text-gray-700">
+        <ul className="list-none space-y-4">
           <li>
             ✅ <strong>Step 1:</strong> Place a bet higher than the current highest bet to enter the game.
           </li>
